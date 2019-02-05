@@ -81,6 +81,13 @@ foreach($serv in $servers){
         Update-ServerReport -message_severity Info -Message $messageWMI
     }
 
+    #WSMan test
+
+
+
+
+    }
+
 
 
 }
