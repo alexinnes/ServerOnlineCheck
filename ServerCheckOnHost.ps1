@@ -76,12 +76,22 @@ foreach($serv in $servers){
         Write-Warning $messageWMI
         Update-ServerReport -message_severity Warning -Message $messageWMI
     }else{
-        $messageWMI = "$($serv.name) - WMI: Good `n"
+        $messageWMI = "$($serv.name) - WMI: Good"
         write-host -BackgroundColor Green $messageWMI
         Update-ServerReport -message_severity Info -Message $messageWMI
     }
 
-    #WSMan test
+    #AdminShare Test
+    $adminShare = "$($serv.name)\c`$"
+
+    If(Test-Path $adminShare){
+        $messageAdmin = "$($serv.name) - Admin Share (C`$): Good `n"
+        Update-ServerReport -message_severity Info -Message $messageAdmin
+    }else{
+        $messageAdmin = "$($serv.name) - Admin Share (C`$): Error cannot location Admin Share"
+        Write-Warning $messageAdmin
+        Update-ServerReport -message_severity Error -Message $messageAdmin
+    }
 
 
 
