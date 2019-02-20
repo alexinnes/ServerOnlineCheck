@@ -61,6 +61,12 @@ foreach($serv in $servers){
         Update-ServerReport -message_severity Info -Message $messagePing
     }
 
+    #server uptime
+    $lastBootUp = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    $currentTime = Get-Date
+    $lastBoot = New-TimeSpan -Start $lastBootUp -End $currentTime
+    Write-Output "$($lastBoot.Days) Days $($lastBoot.Hours) Hours $($lastboot.Minutes) Minutes"
+
     #WMI Test
     try{
         $WMITest = Get-WmiObject -Class win32_process -ErrorAction Stop
@@ -86,6 +92,7 @@ foreach($serv in $servers){
 
     If(Test-Path $adminShare){
         $messageAdmin = "$($serv.name) - Admin Share (C`$): Good `n"
+        write-host -BackgroundColor Gray $messageAdmin
         Update-ServerReport -message_severity Info -Message $messageAdmin
     }else{
         $messageAdmin = "$($serv.name) - Admin Share (C`$): Error cannot location Admin Share"
