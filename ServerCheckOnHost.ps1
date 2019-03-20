@@ -4,7 +4,7 @@ function Update-ServerReport {
     param(
         #location of output file
         [Parameter(Mandatory=$false)]
-        $output_location = "C:\temp",
+        $output_location = "C:\temp\ServerReport",
 
         #Severity of message
         [Parameter(Mandatory=$true)]
@@ -18,7 +18,8 @@ function Update-ServerReport {
 
         $date = Get-Date -format g
         $filePath = "$output_location\"
-        $fileName = "ServerReport.log"
+        $dateString = get-date -UFormat %d-%m-%Y
+        $fileName = "ServerReport$dateString.log"
         $file = "$filePath$fileName"
         if (!(Test-Path $file)){
             New-Item -Path $filePath -name $fileName -ItemType "file"  -Force | Out-Null
@@ -103,9 +104,9 @@ foreach($serv in $servers){
 
 
 
-    }
-
-
-
 }
+
+
+
+
 
