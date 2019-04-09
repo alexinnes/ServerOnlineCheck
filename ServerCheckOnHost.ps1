@@ -35,7 +35,7 @@ $servers = Get-VM
 
 foreach($serv in $servers){
 
-    #Hyper-V Running Test
+    #region Hyper-V Running Test
     $nic = $serv.networkadapters | where{$_.status -eq "OK"} | select -ExpandProperty ipaddresses | where {$_ -match "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"}
     If($serv.State -ne "Running"){
 
@@ -48,8 +48,9 @@ foreach($serv in $servers){
         Update-ServerReport -message_severity Info -Message $messageHypervState
 
     }
+    #endregion
 
-    #Ping Test
+    #region Ping Test
     $ping = Test-Connection $nic -Count 4 -Quiet
     if(!($ping)){
         $messagePing =  "$($serv.Name) - no Ping responce"
@@ -61,14 +62,16 @@ foreach($serv in $servers){
         write-host -BackgroundColor Green $messagePing
         Update-ServerReport -message_severity Info -Message $messagePing
     }
+    #endregion
 
-    #server uptime
+    #region server uptime
     $lastBootUp = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
     $currentTime = Get-Date
     $lastBoot = New-TimeSpan -Start $lastBootUp -End $currentTime
     Write-Output "$($lastBoot.Days) Days $($lastBoot.Hours) Hours $($lastboot.Minutes) Minutes"
+    #endregion
 
-    #WMI Test
+    #region WMI Test
     try{
         $WMITest = Get-WmiObject -Class win32_process -ErrorAction Stop
     }
@@ -87,8 +90,9 @@ foreach($serv in $servers){
         write-host -BackgroundColor Green $messageWMI
         Update-ServerReport -message_severity Info -Message $messageWMI
     }
+    #endregion
 
-    #AdminShare Test
+    #region AdminShare Test
     $adminShare = "$($serv.name)\c`$"
 
     If(Test-Path $adminShare){
@@ -100,7 +104,7 @@ foreach($serv in $servers){
         Write-Warning $messageAdmin
         Update-ServerReport -message_severity Error -Message $messageAdmin
     }
-
+    #endregion
 
 
 
